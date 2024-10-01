@@ -101,5 +101,5 @@ response = full_chain.invoke({"review": prompt})
 
 
 st.write(
-    "Predictable: " + response.choices[0].message.content
+    response.choices[0].message.content
 )
