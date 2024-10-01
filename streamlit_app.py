@@ -88,7 +88,7 @@ Text:
 branch = RunnableBranch(
     (lambda x: "Positive" in x["issue_type"].lower(), positive_chain),
     (lambda x: "NegativeNoFault" in x["issue_type"].lower(), nofault_chain),
-    (lambda x: "NegativeFault" in x["issue_type"].lower(), fault_chain)
+    lambda x: fault_chain,
 )
 full_chain = {"issue_type": issue_type_chain, "text": lambda x: x["review"]} | branch
 
