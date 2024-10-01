@@ -1,6 +1,105 @@
 import streamlit as st
+import openai
+from langchain.prompts import PromptTemplate
+from langchain.llms import OpenAI
+from langchain_core.runnables import RunnableBranch
+import os
 
-st.title("🎈 My new app")
+llm = OpenAI(openai_api_key=st.secrets["OpenAI_Key"])
+
+
+### Create the decision-making chain
+issue_template = """You are an expert at booking airline tickets.
+From the following text, determine whether the experience is one of the following three cases:
+* Positive: The customer is not facing any issues and is having a good experience.
+* NegativeFault: The customer is facing issues affecting their experience. The airline is responsible for the issue. For example, the airline lost the customer's luggage.
+* NegativeNoFault: The customer is facing issues affecting their experience. However, the airline is not responsible for the issue. For example, a delay was caused by the weather.
+
+Only respond with Positive, NegativeFault, or NegativeNoFault.
+
+Text:
+{review}
+
+"""
+issue_type_chain = (
+    PromptTemplate.from_template(issue_template)
+    | llm
+    | StrOutputParser()
+)
+
+
+#### Case 1: Positive
+positive_chain = PromptTemplate.from_template(
+    """You are an experienced travel customer support agent.
+    Thank the customer for their review and for choosing to fly with the airline.
+
+Your response should follow these guidelines:
+    1. Do not provide any reasoning behind the need for visa. Just respond professionally as a travel chat agent.
+    2. Address the customer directly
+
+
+
+Text:
+{text}
+
+"""
+) | llm
+
+
+#### Case 2: NegativeNoFault
+nofault_chain = PromptTemplate.from_template(
+    """You are an experienced travel customer support agent.
+    Offer sympathies but explain to the customer that the airline is not liable in such situations.
+
+Your response should follow these guidelines:
+    1. Do not provide any reasoning behind the need for visa. Just respond professionally as a travel chat agent.
+    2. Address the customer directly
+
+
+
+Text:
+{text}
+
+"""
+) | llm
+
+
+#### Case 3: NegativeFault
+fault_chain = PromptTemplate.from_template(
+    """You are an experienced travel customer support agent.
+    Display a message offering sympathies and inform the user that customer service will contact them soon to resolve the issue or provide compensation.
+
+Your response should follow these guidelines:
+    1. Do not provide any reasoning behind the need for visa. Just respond professionally as a travel chat agent.
+    2. Address the customer directly
+
+
+
+Text:
+{text}
+
+"""
+) | llm
+
+
+
+### Put all the chains together
+branch = RunnableBranch(
+    (lambda x: "Positive" in x["issue_type"].lower(), positive_chain),
+    (lambda x: "NegativeNoFault" in x["issue_type"].lower(), nofault_chain),
+    (lambda x: "NegativeFault" in x["issue_type"].lower(), fault_chain),
+    lambda x: "goodbye",
+)
+full_chain = {"issue_type": issue_type_chain, "text": lambda x: x["review"]} | branch
+
+# streamlit app layout
+st.title("Airline Experience Feedback")
+prompt = st.text_input("Share with us your experience of the latest trip", "My trip was awesome")
+
+# Run the chain
+response = full_chain.invoke({"review": prompt})
+
+
 st.write(
-    "Let's start building! For help and inspiration, head over to [docs.streamlit.io](https://docs.streamlit.io/)."
+    "Predictable: " + response.choices[0].message.content
 )
