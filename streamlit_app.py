@@ -90,7 +90,7 @@ branch = RunnableBranch(
     (lambda x: "NegativeNoFault" in x["issue_type"].lower(), nofault_chain),
     lambda x: fault_chain,
 )
-full_chain = {"issue_type": issue_type_chain, "text": lambda x: x["review"]} | branch
+full_chain = {"issue_type": issue_type_chain, "review": lambda x: x["review"]} | branch
 
 # streamlit app layout
 st.title("Airline Experience Feedback")
