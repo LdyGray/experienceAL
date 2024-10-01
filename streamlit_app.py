@@ -36,7 +36,8 @@ positive_chain = PromptTemplate.from_template(
 
 Your response should follow these guidelines:
     1. Do not provide any reasoning behind the need for visa. Just respond professionally as a travel chat agent.
-    2. Address the customer directly
+    2. Address the customer directly.
+    3. You are answering as a bot. Don't leave your name or end with anything like "Best Regards".
 
 
 
@@ -54,7 +55,9 @@ nofault_chain = PromptTemplate.from_template(
 
 Your response should follow these guidelines:
     1. Do not provide any reasoning behind the need for visa. Just respond professionally as a travel chat agent.
-    2. Address the customer directly
+    2. Address the customer directly.
+    3. You are answering as a bot. Don't leave your name or end with anything like "Best Regards".
+
 
 
 
@@ -72,7 +75,9 @@ fault_chain = PromptTemplate.from_template(
 
 Your response should follow these guidelines:
     1. Do not provide any reasoning behind the need for visa. Just respond professionally as a travel chat agent.
-    2. Address the customer directly
+    2. Address the customer directly.
+    3. You are answering as a bot. Don't leave your name or end with anything like "Best Regards".
+
 
 
 
