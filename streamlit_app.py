@@ -3,6 +3,7 @@ import openai
 from langchain.prompts import PromptTemplate
 from langchain.llms import OpenAI
 from langchain_core.runnables import RunnableBranch
+from langchain_core.output_parsers import StrOutputParser
 import os
 
 llm = OpenAI(openai_api_key=st.secrets["OpenAI_Key"])
