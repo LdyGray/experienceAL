@@ -102,5 +102,5 @@ response = full_chain.invoke({"review": prompt})
 
 
 st.write(
-    response.choices[0].message.content
+    response
 )
