@@ -11,14 +11,14 @@ llm = OpenAI(openai_api_key=st.secrets["OpenAI_Key"])
 
 ### Create the decision-making chain
 issue_template = """You are an expert at booking airline tickets.
-From the following text, determine whether the experience is one of the following three cases:
+From the following review, determine whether the experience is one of the following three cases:
 * Positive: The customer is not facing any issues and is having a good experience.
 * NegativeFault: The customer is facing issues affecting their experience. The airline is responsible for the issue. For example, the airline lost the customer's luggage.
 * NegativeNoFault: The customer is facing issues affecting their experience. However, the airline is not responsible for the issue. For example, a delay was caused by the weather.
 
 Only respond with Positive, NegativeFault, or NegativeNoFault.
 
-Text:
+Review:
 {review}
 
 """
@@ -40,8 +40,8 @@ Your response should follow these guidelines:
 
 
 
-Text:
-{text}
+Review:
+{review}
 
 """
 ) | llm
@@ -58,8 +58,8 @@ Your response should follow these guidelines:
 
 
 
-Text:
-{text}
+Review:
+{review}
 
 """
 ) | llm
@@ -76,8 +76,8 @@ Your response should follow these guidelines:
 
 
 
-Text:
-{text}
+Review:
+{review}
 
 """
 ) | llm
